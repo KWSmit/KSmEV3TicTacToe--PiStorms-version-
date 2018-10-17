@@ -1,0 +1,18 @@
+Traceback (most recent call last):
+  File "/home/robot/ksm_tictactoe_ps/ksm_tictactoe_lego_devices.py", line 123, in <module>
+    m.turntable.move_to_abs_pos(2)
+  File "/home/robot/ksm_tictactoe_ps/ksm_tictactoe_lego_devices.py", line 57, in move_to_abs_pos
+    self.motor_move.run_to_abs_pos(position_sp=self.motor_move_positions[pos])
+  File "/usr/lib/python3/dist-packages/ev3dev2/motor.py", line 696, in run_to_abs_pos
+    self.command = self.COMMAND_RUN_TO_ABS_POS
+  File "/usr/lib/python3/dist-packages/ev3dev2/motor.py", line 353, in command
+    self._command = self.set_attr_string(self._command, 'command', value)
+  File "/usr/lib/python3/dist-packages/ev3dev2/__init__.py", line 275, in set_attr_string
+    return self._set_attribute(attribute, name, value)
+  File "/usr/lib/python3/dist-packages/ev3dev2/__init__.py", line 238, in _set_attribute
+    self._raise_friendly_access_error(ex, name)
+  File "/usr/lib/python3/dist-packages/ev3dev2/__init__.py", line 259, in _raise_friendly_access_error
+    raise driver_error
+  File "/usr/lib/python3/dist-packages/ev3dev2/__init__.py", line 235, in _set_attribute
+    attribute.write(value)
+OSError: [Errno 121] Remote I/O error
