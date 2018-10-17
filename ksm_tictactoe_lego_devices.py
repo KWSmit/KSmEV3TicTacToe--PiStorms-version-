@@ -31,12 +31,32 @@ port_BBS2.mode = 'ev3-analog'
 sleep(2)
 
 
+class ExceededRetries(Exception):
+    ''' Custom exception for exceeding retries at Remote I/O error.'''
+    pass
+
+
+def try_except(func):
+    ''' Retry function when Remote I/O error occurs.'''
+    def wrapper(*args, **kwargs):
+        for i in range(10):
+            try:
+                result = func(*args, **kwargs)
+                return result
+            except OSError:
+                with open('logfile.txt', 'a') as f:
+                    f.write('OSError\n')
+        raise ExceededRetries('ExceededRetries in function ' + func.__name__)
+    return wrapper
+
+
 class Tic_tac_toe_machine:
     def __init__(self):
         self.turntable = Turntable('pistorms:BAM1', 'pistorms:BAM2')
         self.pen = Pen('pistorms:BBM2', 'pistorms:BBM1')
         self.ts_play = TouchSensor('pistorms:BAS2')
 
+    @try_except
     def draw_computer_move(self, field_index):
         ''' Draw the move (cross) of computer.'''
         # Move pen to given field
@@ -46,6 +66,7 @@ class Tic_tac_toe_machine:
         # Goto start position
         self.turntable.goto_start_pos()
 
+    @try_except
     def _move_to_field(self, field_index):
         ''' Move turntable and pen to given field (private method).'''
         #        turntable   pen
@@ -77,6 +98,7 @@ class Tic_tac_toe_machine:
                                   self.turntable.motor_turn,
                                   self.pen.motor_move)
 
+    @try_except
     def _draw_cross(self):
         ''' Draw a cross at given field_index).'''
         # Bring pen down to paper
@@ -114,21 +136,25 @@ class Turntable:
         self.motor_turn.stop_action = 'brake'
         self.motor_turn_positions = (0, -345, 345)
 
+    @try_except
     def move_to_abs_pos(self, pos):
         ''' Move the turntable to given absolute position [0,..,5].'''
         self.motor_move.run_to_abs_pos(
                         position_sp=self.motor_move_positions[pos])
 
+    @try_except
     def move_to_rel_pos(self, rel_pos):
         ''' Move the turntable over a given distance.'''
         self.motor_move.run_to_rel_pos(position_sp=rel_pos)  # rel_pos=150
         wait_while_motors_running(self.motor_move)
 
+    @try_except
     def turn_to_abs_pos(self, pos):
         ''' Turn the turntable to a given absolute position [0,..,2].'''
         self.motor_turn.run_to_abs_pos(
                         position_sp=self.motor_turn_positions[pos])
 
+    @try_except
     def goto_start_pos(self):
         ''' Move and turn the turntable to its start position.'''
         self.move_to_abs_pos(0)
@@ -151,6 +177,7 @@ class Pen:
         # Move pen up
         self.pen_up()
 
+    @try_except
     def pen_up(self):
         ''' Move pen up.'''
         self.motor_pen.speed_sp = -300
@@ -160,18 +187,21 @@ class Pen:
                 self.motor_pen.stop()
                 break
 
+    @try_except
     def pen_down(self):
         ''' Move pen down.'''
         self.motor_pen.speed_sp = 200
         self.motor_pen.run_to_rel_pos(position_sp=25)
         wait_while_motors_running(self.motor_pen)
 
+    @try_except
     def move_to_abs_pos(self, pos):
         ''' Move pen sidways to absolute position [0,..,5].'''
         self.motor_move.run_to_abs_pos(
                         position_sp=self.motor_move_positions[pos])
 
 
+@try_except
 def wait_while_motors_running(*args):
     ''' Hold program when given motors are still running.'''
     for motor in args:
