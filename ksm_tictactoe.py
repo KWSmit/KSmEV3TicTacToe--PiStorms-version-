@@ -5,7 +5,7 @@
 # Build with ev3dev.
 #
 # Author:  Kees Smit, 2018
-# Website: ksmev3.wordpress.com
+# Website: kwsmit.github.io
 #
 # Hardware:
 # - PiStorms v2 / Raspberry Pi3B
