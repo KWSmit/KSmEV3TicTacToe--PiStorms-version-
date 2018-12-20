@@ -109,14 +109,14 @@ class Tic_tac_toe_machine:
         # Move pen up
         self.pen.pen_up()
         # Goto startpoint of second line of the cross
-        self.turntable.motor_move.run_to_rel_pos(position_sp=-150)
+        self.turntable.motor_move.run_to_rel_pos(position_sp=-100)
         self.pen.motor_move.run_to_rel_pos(position_sp=-75)
         wait_while_motors_running(self.turntable.motor_move,
                                   self.pen.motor_move)
         # Bring pen down to paper
         self.pen.pen_down()
         # Draw second ling of the cross
-        self.pen.motor_move.run_to_rel_pos(position_sp=150)
+        self.pen.motor_move.run_to_rel_pos(position_sp=175)
         wait_while_motors_running(self.pen.motor_move)
         # Move pen up
         self.pen.pen_up()
@@ -128,7 +128,7 @@ class Turntable:
         self.motor_move = Motor(port_motor_move)
         self.motor_move.speed_sp = 400
         self.motor_move.stop_action = 'brake'
-        self.motor_move_positions = (0, -740, -920, -1080, -1200, -1380)
+        self.motor_move_positions = (0, -740, -890, -1030, -1175, -1380)
 
         # Motor for rotating turntable
         self.motor_turn = Motor(port_motor_turn)
@@ -168,30 +168,27 @@ class Pen:
         self.motor_move.reset()
         self.motor_move.speed_sp = 400
         self.motor_move.stop_action = 'brake'
-        self.motor_move_positions = (0, -100, -250, -400, -530, -680)
+        self.motor_move_positions = (0, -60, -210, -350, -500, -640)
         # Motor te move pen up or down
         self.motor_pen = LargeMotor(port_motor_pen)
         self.motor_pen.stop_action = 'hold'
         # TouchSensor to indicate pen is up
         self.ts_pen = TouchSensor('pistorms:BBS2')
         # Move pen up
-        self.pen_up()
+        self.motor_pen.run_forever(speed_sp=-200)
+        self.ts_pen.wait_for_pressed()
+        self.motor_pen.stop()
 
     @try_except
     def pen_up(self):
         ''' Move pen up.'''
-        self.motor_pen.speed_sp = -300
-        self.motor_pen.run_forever()
-        while True:
-            if self.ts_pen.is_pressed:
-                self.motor_pen.stop()
-                break
+        self.motor_pen.run_to_abs_pos(speed_sp=400, position_sp=-20)
+        wait_while_motors_running(self.motor_pen)
 
     @try_except
     def pen_down(self):
         ''' Move pen down.'''
-        self.motor_pen.speed_sp = 200
-        self.motor_pen.run_to_rel_pos(position_sp=25)
+        self.motor_pen.run_to_abs_pos(speed_sp=400, position_sp=20)
         wait_while_motors_running(self.motor_pen)
 
     @try_except

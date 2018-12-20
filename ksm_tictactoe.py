@@ -58,7 +58,6 @@ while True:
     elif start_player == 'AI_PLAYER':
         show_message('The computer will start...', 2)
         computer = True
-
     else:
         show_message('Human player will start...', 2)
         computer = False
@@ -85,7 +84,7 @@ while True:
                 board.index[result['index']] = board.AI_PLAYER
                 computer = False
 
-                # TODO: implement drawing computer move
+                # Draw computer move
                 m.draw_computer_move(result['index'])
                 show_message('Computer move:' + str(result['index']), 0)
 

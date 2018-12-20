@@ -73,7 +73,7 @@ def show_start_menu():
     # Update screen to show menu
     display.update()
 
-    # Detect user input (touch on screeN)
+    # Detect user input (touch on screen)
     abs_x_valid = False
     abs_y_valid = False
     valid_input = False
@@ -88,7 +88,7 @@ def show_start_menu():
             abs_y = event.value
             abs_y_valid = True
         elif event.code == 28:
-            # GO-button pressed, stop program
+            # PiStorms' GO-button pressed, stop program
             start = 'STOP_PROGRAM'
             break
 
